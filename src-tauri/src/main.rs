@@ -106,7 +106,8 @@ fn main() {
             get_current_config_as_preset,
             update_system_tray_menu,
             check_config_status,
-            update_tray_icon
+            update_tray_icon,
+            get_config_directory
         ])
         .setup(|app| {
             // Update tray icon and menu on startup

@@ -21,14 +21,37 @@ pub struct ConfigPreset {
     pub disable_nonessential_traffic: String,
 }
 
-fn get_claude_config_path() -> PathBuf {
+fn get_claude_dir() -> PathBuf {
     let home_dir = dirs::home_dir().expect("Failed to get home directory");
-    home_dir.join(".claude").join("settings.json")
+    
+    #[cfg(target_os = "windows")]
+    {
+        home_dir.join(".claude")
+    }
+    
+    #[cfg(not(target_os = "windows"))]
+    {
+        home_dir.join(".claude")
+    }
+}
+
+fn ensure_claude_dir_exists() -> Result<PathBuf, String> {
+    let claude_dir = get_claude_dir();
+    
+    if !claude_dir.exists() {
+        fs::create_dir_all(&claude_dir)
+            .map_err(|e| format!("Failed to create claude directory: {}", e))?;
+    }
+    
+    Ok(claude_dir)
+}
+
+fn get_claude_config_path() -> PathBuf {
+    get_claude_dir().join("settings.json")
 }
 
 fn get_presets_path() -> PathBuf {
-    let home_dir = dirs::home_dir().expect("Failed to get home directory");
-    home_dir.join(".claude").join("api-presets.json")
+    get_claude_dir().join("api-presets.json")
 }
 
 #[command]
@@ -50,6 +73,7 @@ pub async fn read_claude_config() -> Result<ClaudeConfig, String> {
 
 #[command]
 pub async fn write_claude_config(config: ClaudeConfig) -> Result<(), String> {
+    ensure_claude_dir_exists()?;
     let config_path = get_claude_config_path();
     
     let content = serde_json::to_string_pretty(&config)
@@ -80,6 +104,7 @@ pub async fn read_presets() -> Result<Vec<ConfigPreset>, String> {
 
 #[command]
 pub async fn save_presets(presets: Vec<ConfigPreset>) -> Result<(), String> {
+    ensure_claude_dir_exists()?;
     let presets_path = get_presets_path();
     
     let content = serde_json::to_string_pretty(&presets)
@@ -282,4 +307,10 @@ pub async fn update_system_tray_menu(app_handle: tauri::AppHandle) -> Result<(),
         .map_err(|e| format!("Failed to update tray menu: {}", e))?;
     
     Ok(())
+}
+
+#[command]
+pub async fn get_config_directory() -> Result<String, String> {
+    let claude_dir = get_claude_dir();
+    Ok(claude_dir.to_string_lossy().to_string())
 }
