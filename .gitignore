@@ -1,0 +1,40 @@
+# Claude API Switcher
+
+node_modules/
+dist/
+src-tauri/target/
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Tauri specific
+src-tauri/target/
+src-tauri/Cargo.lock
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary files
+*.tmp
+*.temp
+SYSTEM_TRAY_REPORT.md
+EMOJI_ICONS_REPORT.md
+create_logo_icons.sh
+*.py
