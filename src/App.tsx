@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Plus, Settings, Check, X, Edit, Trash2, Copy, AlertTriangle } from 'lucide-react';
 import { listen } from '@tauri-apps/api/event';
-import { appWindow } from '@tauri-apps/api/window';
 import { configApi } from './api';
 import { ConfigPreset, ConfigStatus } from './types';
 import './App.css';
